@@ -14,6 +14,16 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
+  async validateUser(username: string, pass: string): Promise<any> {
+    const user = await this.userRepository.findOne({where:{email: username}});
+    console.log("password check taken place");
+    // if (user && user.password === pass) {
+    //   const { password, ...result } = user;
+    //   return result;
+    // }
+    return null;
+  }
+
   async createUser(userCredentials: CreateUser) {
     const newUser = new User();
     newUser.password = userCredentials.password;
@@ -28,10 +38,10 @@ export class AuthService {
         email: userCredentials.email,
       },
     });
-    console.log(user.password);
     if (!user || user.password !== userCredentials.password) {
       throw new UnauthorizedException('password or email dont match');
     }
+    console.log(user.password);
 
     return {
       access_token: this.jwtService.sign({
